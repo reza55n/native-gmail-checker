@@ -5,21 +5,49 @@
   <style>
     body {
       width: 320px;
-      padding: 30px 26px;
-      font-family: Arial, sans-serif;
+      padding: 16px 12px;
+      font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    }
+    body.dark {
       background-color: rgb(43, 43, 43);
       color: rgb(216, 216, 216);
     }
+    body.light {
+      background-color: rgb(255, 255, 255);
+      color: rgb(0, 0, 0);
+    }
+    hr {
+      background-color: none;
+      border: none;
+      margin: 16px 0;
+    }
+    body.light hr {
+      border-bottom: 1px solid rgb(221, 221, 221);
+    }
+    body.dark hr {
+      border-bottom: 1px solid rgb(65, 65, 65);
+    }
     a {
       text-decoration: none;
+    }
+    body.light a {
+      color: rgb(29, 12, 189)
+    }
+    body.dark a {
       color: rgb(78, 161, 255)
     }
     h2 {
       margin-top: 0;
     }
+    h3 {
+      margin: 10px 0;
+    }
+    p {
+      margin: 8px 0;
+    }
   </style>
 </head>
-<body>
+<body class="light">
   <h2>Native Gmail™ Checker</h2>
   
   <p>Copyright (C) 2026<br/>
@@ -28,24 +56,27 @@
     <a href="https://github.com/reza55n/native-gmail-checker"
     target="_blank">github.com/reza55n/native-gmail-checker</a></p>
   
-  <h3>Prerequisites:</h3>
-  <ul>
-    <li>Go to Gmail's all settings > Advanced, and enable 'Unread message icon and badge'</li>
-    <li style="margin-top: 8px;"><b>To prevent deactivate Gmail's tab:</b> Go to Chrome's settings > Performance >
-      Always keep these sites active and add 'mail.google.com'</li>
-  </ul>
+  <hr/>
+  <h3>Prerequisites</h3>
+  <p><b>To see unread status on tab's icon:</b> Go to Gmail's all settings > Advanced, and enable 'Unread message icon and badge'</p>
+  <p><b>To prevent deactivate Gmail's tab:</b> Go to Chrome's settings > Performance >
+    Always keep these sites active and add 'mail.google.com'</p>
   
-    <div style="margin-top: 18px;">
-      <label>
-        <input type="checkbox" id="badge">
-        Improved badge icon
-      </label>
-      <br/>
-      <label>
-        <input type="checkbox" id="lock">
-        Lock Chrome's Close button
-      </label>
-    </div>
+  <hr/>
+  <h3>Settings</h3>
+  <div>
+    <label>
+      <input type="checkbox" id="badge">
+      Improved badge icon
+    </label>
+  </div>
+  <div style="margin-top: 8px;">
+    <label>
+      <input type="checkbox" id="lock">
+      Lock Chrome's Close button
+    </label>
+  </div>
+  
   <script src="popup.js"></script>
 </body>
 </html>
