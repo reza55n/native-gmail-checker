@@ -19,7 +19,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const gmailUrl = 'https://mail.google.com/mail/u/0'
     
     var allTabs = await chrome.tabs.query({})
-    var gmailTabs = allTabs.filter(e => e.url?.startsWith(gmailUrl))
+    var gmailTabs = allTabs.filter(e => e?.url?.startsWith(gmailUrl))
     
     if (!gmailTabs.length) {
       await chrome.tabs.create({
@@ -28,7 +28,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         pinned: true,
       })
       allTabs = await chrome.tabs.query({})
-      gmailTabs = allTabs.filter(e => e.url?.startsWith(gmailUrl))
+      gmailTabs = allTabs.filter(e => e?.url?.startsWith(gmailUrl))
     }
     
     const gmailTab = gmailTabs[0]
@@ -38,7 +38,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
       return
     }
     
-    if (!gmailTab.pinned) {
+    if (!gmailTab?.pinned) {
       await chrome.tabs.update(gmailTab.id, { pinned: true })
     }
     
@@ -47,8 +47,8 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     var targetIcon
     
     // Ignore if icon is default (especially for loading page) or already set to our icons
-    if (![unread, unread0, 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico'].includes(gmailTab.favIconUrl)) {
-      if (gmailTab.favIconUrl === 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/3/0.png') {
+    if (![unread, unread0, 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico'].includes(gmailTab?.favIconUrl)) {
+      if (gmailTab?.favIconUrl === 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/3/0.png') {
         // No unread
         targetIcon = unread0
       } else {
@@ -57,34 +57,38 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
       }
     }
     
-    await chrome.scripting.executeScript({
-      target: { tabId: gmailTab.id },
-      
-      func: async (targetIcon) => {
-        // It may not work when the page is being loaded
-        const lc = await chrome.storage.sync.get('lock')
-        if (lc.lock) {
-          window.onbeforeunload = () => 'This prompt is here to warn before closing the browser.'
-          // console.log('Locked')
-        } else {
-          window.onbeforeunload = null
-          // console.log('Unlocked')
-        }
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: gmailTab.id },
         
-        const bd = await chrome.storage.sync.get('badge')
-        if (bd.badge && targetIcon) {
-          const oldLink = document.querySelector("link[rel*='icon']")
-          if (oldLink) {
-            oldLink.remove()
+        func: async (targetIcon) => {
+          // It may not work when the page is being loaded
+          const lc = await chrome.storage.sync.get('lock')
+          if (lc.lock) {
+            window.onbeforeunload = () => 'This prompt is here to warn before closing the browser.'
+            // console.log('Locked')
+          } else {
+            window.onbeforeunload = null
+            // console.log('Unlocked')
           }
           
-          const link = document.createElement('link')
-          link.rel = 'icon'
-          link.href = targetIcon
-          document.head.appendChild(link)
-        }
-      },
-      args: [targetIcon || null]
-    })
+          const bd = await chrome.storage.sync.get('badge')
+          if (bd.badge && targetIcon) {
+            const oldLink = document.querySelector("link[rel*='icon']")
+            if (oldLink) {
+              oldLink.remove()
+            }
+            
+            const link = document.createElement('link')
+            link.rel = 'icon'
+            link.href = targetIcon
+            document.head.appendChild(link)
+          }
+        },
+        args: [targetIcon || null]
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
 })
