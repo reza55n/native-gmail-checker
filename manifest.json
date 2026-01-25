@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Native Gmail™ Checker",
-  "version": "0.6",
-  "description": "A simple and secure way to check Gmail! Automatically makes the native Gmail tab always pinned, with a better badge icon. Optionally, it can lock Chrome's Close button.",
+  "version": "0.7",
+  "description": "The most secure way to check Gmail! It automatically opens and pins the native Gmail tab and gives it an improved badge icon. Optionally, it can also lock Chrome's Close button.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -19,6 +19,8 @@
     "service_worker": "background.js"
   },
   "host_permissions": [
-    "https://mail.google.com/*"
+    "https://accounts.google.com/*",
+    "https://mail.google.com/*",
+    "https://workspace.google.com/*"
   ]
 }

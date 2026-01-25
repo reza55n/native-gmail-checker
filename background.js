@@ -17,9 +17,39 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === "chromeChecker") {
     
     const gmailUrl = 'https://mail.google.com/mail/u/0'
+    const getGmailTabs = e => e?.url?.startsWith(gmailUrl)
     
     var allTabs = await chrome.tabs.query({})
-    var gmailTabs = allTabs.filter(e => e?.url?.startsWith(gmailUrl))
+    var gmailTabs = allTabs.filter(getGmailTabs)
+    
+    if (gmailTabs.filter(e => !e?.url).length) {
+      console.log('Error: gmailTab found with empty url', gmailTabs)
+      return
+    }
+    
+    const preventingTabs = allTabs.filter(e =>
+      e?.url?.startsWith('https://accounts.google.com') ||
+      e?.url?.startsWith('https://workspace.google.com'))
+    
+    if (preventingTabs.length) {
+      console.log('Error: preventingTabs found!', preventingTabs)
+      preventingTabs.forEach(async pt => {
+        try {
+          await chrome.scripting.executeScript({
+            target: { tabId: pt.id },
+            func: async () => {
+              if (!window?.nativeGmailCheckerWarned) {
+                alert('Native Gmail™ Checker will continue working after this tab is closed.')
+                window.nativeGmailCheckerWarned = true
+              }
+            },
+          })
+        } catch (e) {
+          console.log(`preventingTabs execution failed - ${e}`)
+        }
+      })
+      return
+    }
     
     if (!gmailTabs.length) {
       await chrome.tabs.create({
@@ -28,7 +58,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         pinned: true,
       })
       allTabs = await chrome.tabs.query({})
-      gmailTabs = allTabs.filter(e => e?.url?.startsWith(gmailUrl))
+      gmailTabs = allTabs.filter(getGmailTabs)
     }
     
     const gmailTab = gmailTabs[0]
@@ -52,7 +82,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         // No unread
         targetIcon = unread0
       } else {
-        // Unread or invalid icon
+        // Unread, invalid icon or any errors
         targetIcon = unread
       }
     }
@@ -88,7 +118,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         args: [targetIcon || null]
       })
     } catch (e) {
-      console.log(e)
+      console.log(`gmailTab execution failed - ${e}`)
     }
   }
 })
