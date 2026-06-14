@@ -77,8 +77,19 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     var targetIcon
     
     // Ignore if icon is default (especially for loading page) or already set to our icons
-    if (![unread, unread0, 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico'].includes(gmailTab?.favIconUrl)) {
-      if (gmailTab?.favIconUrl === 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/3/0.png') {
+    if (![unread, unread0,
+      'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+      'https://ssl.gstatic.com/ui/v1/icons/mail/images/favicon_gmail_2026_v2.ico', // Just in case
+      'https://ssl.gstatic.com/images/branding/productlogos/gmail_2026/v2/ico/gmail_2026_256dp.ico',
+    ].includes(gmailTab?.favIconUrl)) {
+      
+      /*
+       * https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/3/0.png
+       * https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/4/0.png
+       * https://ssl.gstatic.com/ui/v1/icons/mail/rfr/unreadcountfavicon/5/0.png
+       * 
+       */
+      if (gmailTab?.favIconUrl?.endsWith('/0.png')) {
         // No unread
         targetIcon = unread0
       } else {
