@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Native Gmail™ Checker",
-  "version": "0.10.0.100",
+  "version": "0.11.0.100",
   "description": "The most stable way to check Gmail! It automatically opens and pins the native Gmail tab and gives it an improved badge icon. Optionally, it can also lock Chrome's Close button.",
   "icons": {
     "16": "icons/icon16.png",
